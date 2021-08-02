@@ -1,0 +1,7 @@
+{
+  "baseUrl": "The OtterTax sandbox or production URL, for example https://sandbox.ottertax.com",
+  "loginData": {
+    "email": "The email address you provided when you registered",
+    "password": "The password you provided when you registered"
+  }
+}

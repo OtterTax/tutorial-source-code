@@ -1,0 +1,9 @@
+[
+  { "uploaderId": "23912",
+    "statement": { "nonemployeeComp": "3687.24" }
+  },
+  { "uploaderId": "23914",
+    "statement": { "recipientCity": "New York",
+                   "recipientZipCode": "10162" }
+  }
+]

@@ -1,0 +1,10 @@
+# Ignore the configuration file which contains a username and password.
+/config.json
+
+# Ignore the javascript directory for now.  Code is not complete.
+# Also need to add instructions to README file for installing
+# packages.
+/javascript/*
+
+# Ignore downloaded statements
+/ruby/statement_downloads/*
