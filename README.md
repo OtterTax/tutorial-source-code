@@ -16,14 +16,19 @@ versions of the languages:
 
 For the impatient reader who does not want to watch the tutorials :wink:,
 here is a brief list of steps for running the code.
-* Register on either the [sandbox](https://sandbox.ottertax.com/register)
-  or on the [production](https://api.ottertax.com/register) site.  Be 
-  sure to [confirm your registration](https://doc.ottertax.com/registration/registration_confirmation/).
 * Clone this repository.
-* Create a config.json file.  Use config.json.example to create the file
-  by hand (it's a very simple file) or run the appropriate build_config
-  program for the language you're using.  For example, ruby users should
-  run build_config.rb in the ruby directory.
+* Register on either the [sandbox](https://sandbox.ottertax.com/register)
+  or on the [production](https://api.ottertax.com/register) site.
+* Confirm your registration and create a configuration file.  These tasks
+  can be performed manually (they're both quite simple) or by running the
+  utility program distributed with this code.
+  * To use the utility program, run the appropriate setup program for the
+    language you're using.  For example, ruby users should run setup.rb in
+    the ruby directory.
+  * To confirm your registration manually, see the
+    [online documentation](https://doc.ottertax.com/registration/registration_confirmation/).
+    To create the configuration file manually, copy the file `config.json.example`
+    to `config.json` and edit the file to reflect your settings.
 * Add statements by running the appropriate program for the language you're
   using.  For example, ruby users should run add.rb.
 * Run the check program to check the validity of the statements.  Note
