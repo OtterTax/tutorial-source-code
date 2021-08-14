@@ -121,7 +121,7 @@ module OTX
         msg = 'Configuration file was created.'
         @config_file_created = true
       end
-      STDOUT.write( "\n#{msg}Press enter to continue. " )
+      STDOUT.write( "\n#{msg} Press enter to continue. " )
       STDIN.gets
     end
     # Report the actions taken to the user.
