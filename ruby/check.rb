@@ -38,7 +38,6 @@ module OTX
     end
     def check
       credential = get_credential
-      statements = get_data( filename: '../data/f1099nec-data.json' );
       # Uploader IDs are provided by the user who uploads the statement.
       # See ../data/f1099nec-data.json
       # IDs for non-existent statements (e.g., those that have been deleted) will be
