@@ -137,9 +137,9 @@ module OTX
     def clear_console
       (system "clear") || (system "cls")
     end
-    # Get the GraphQL endpoint that corresponds to the environment that the user wishes to
+    # Get the base GraphQL endpoint that corresponds to the environment that the user wishes to
     # configure.
-    # @return [String] The GraphQL endpoint, for example https://sandbox.ottertax.com.
+    # @return [String] The base GraphQL endpoint, for example https://sandbox.ottertax.com.
     def get_graphql_endpoint
       STDOUT.puts( "\nAvailable environments" )
       @environments.each do |k,v|
@@ -156,7 +156,7 @@ module OTX
       environment[1]
     end
     # Get the user's password, either a new password or an existing password.
-    # @param new_password [Boolean] If set to true, print information about minimum password
+    # @param new_password [Boolean] If true, print information about minimum password
     #   length.  If false, prompt user for their existing password.
     # @return [String] The user's password.
     def get_password( new_password: false )
@@ -178,7 +178,8 @@ module OTX
       STDOUT.puts( text )
       STDIN.gets.chomp
     end
-    # Get the user's confirmation token.
+    # Get the user's confirmation token. Confirmation tokens are emailed to users
+    # after successful registration.
     # @return [String] The user's confirmation token.
     def get_confirmation_token
       text = "\nEnter the confirmation token from the email you received\n" \
@@ -187,7 +188,7 @@ module OTX
       STDIN.gets.chomp
     end
     # Build the GraphQL mutation for confirming a user's registration.
-    # @param password [String] The password the user has chosen to access the OtterTax API.
+    # @param password [String] The password the user uses to access the OtterTax API.
     # @param confimation_token [String] The confirmation token received by the user after
     #   completing the registration process.
     # @return [String] The full GraphQL mutation.
