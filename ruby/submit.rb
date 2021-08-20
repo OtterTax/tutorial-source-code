@@ -28,8 +28,7 @@ module OTX
       statements = get_data( filename: '../data/f1099nec-data.json' );
       # Uploader IDs are provided by the user who uploads the statement.
       # See ../data/f1099nec-data.json
-      # The list of IDs assumes that statement with ID 23913 was deleted by running delete.rb.
-      uploader_ids = ['23911','23912','23914','23915']
+      uploader_ids = ['23911','23912','23913','23914','23915']
       mutation = build_mutation(uploader_ids: uploader_ids)
       response = post_gql( credential: credential,
                            payload: mutation )
