@@ -35,7 +35,6 @@ module OTX
     def download
       prepare_download_directory
       credential = get_credential
-      statements = get_data( filename: '../data/f1099nec-data.json' );
       # Uploader IDs are provided by the user who uploads the statement.
       # See ../data/f1099nec-data.json
       uploader_ids = ['23911','23912','23913','23914','23915']
