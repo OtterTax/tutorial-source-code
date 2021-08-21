@@ -3,6 +3,7 @@
   "dependencies": {
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "readline-sync": "^1.4.10"
   }
 }
