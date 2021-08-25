@@ -18,7 +18,7 @@ import { GraphQLClient, gql } from 'graphql-request'
  *   Each statement in the array is an object.
  * @return {string} The full GraphQL add mutation.
  */
-//still not yet functional, but working on updating this file
+//still not yet functional, but working on updating this file eli eli
 
 function buildMutation(statements) {
   const data = `
