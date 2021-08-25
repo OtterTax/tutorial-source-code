@@ -18,6 +18,7 @@ import { GraphQLClient, gql } from 'graphql-request'
  *   Each statement in the array is an object.
  * @return {string} The full GraphQL add mutation.
  */
+//still not yet functional
 
 function buildMutation(statements) {
   const data = `
@@ -49,7 +50,7 @@ function buildMutation(statements) {
 /**
  * Perform the work to get the access credentials and to read the JSON file 
  * into JS objects.
- * format the statements into GraphQL syntax
+ * format the statements into GraphQL syntax 
  * and then send them to the server. 
  * Return the uploaded data to a manipulatable String.
  */
