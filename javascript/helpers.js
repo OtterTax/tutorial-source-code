@@ -102,7 +102,12 @@
  
  export const toGqlObject = (obj) => {
    const items = Object.keys(obj).map((k) => {
-     return(`${k}: ${JSON.stringify(obj[k])}`)
+    // if(obj[k] === Object) {
+    //   console.log(obj[k]);
+    //   toGqlObject(obj[k]);
+    // } 
+    // console.log(obj[k]);
+    return(`${k}: ${JSON.stringify(obj[k])}`)
    });
    return("\n{" + items.join("\n") + "\n}\n");
  }
