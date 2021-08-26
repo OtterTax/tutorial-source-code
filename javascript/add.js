@@ -1,10 +1,14 @@
-//This import increases functionality to interact with the file system
+/*
+ * Import fs so we can read and write files.
+*/
 import fs from 'fs';
 
-//import our team's helper methods from the file helpers.js
+/*
+ *  Import global helper methods
+*/
 import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials } from './helpers.js'
 
-/**
+/*
  * Using graphql-request from
  * https://github.com/prisma-labs/graphql-request
  * Example tested with node version 14.16.0
@@ -18,10 +22,8 @@ import { GraphQLClient, gql } from 'graphql-request'
  *   Each statement in the array is an object.
  * @return {string} The full GraphQL add mutation.
  */
-//still not yet functional
-
 function buildMutation(statements) {
-  const data = `
+    const data = `
     mutation {
       addF1099necStatements(
         statements: [
@@ -41,7 +43,7 @@ function buildMutation(statements) {
           messages
         }
       }
-    }  
+    }
   `
   return(data);
 }
@@ -56,26 +58,26 @@ function buildMutation(statements) {
  */
 
 async function main() {
-  
+
   const credential = await getCredential();
   const statements = getData('../data/f1099nec-data.json', 'utf8');
   const endpoint = getGraphqlEndpoint();
   const graphQLClient = new GraphQLClient(endpoint, { headers: credential });
   const mutation = gql`${buildMutation(statements)}`;
   const response = await graphQLClient.request(mutation);
- 
-  /**
+
+  /*
    * response is a JS object that you can manipulate to suit your needs.
    * Here we're just going to print it.
    */
   console.log(JSON.stringify(response,' ', '  '));
 
-  /**
+  /*
    * Delete User Credentials: delete the access keys from the server, this is
    * good security practice to limit access to the user's Tax files
    */
   await deleteCredentials(credential);
-  console.log('Credentials Successfully Deleted')
+  console.log('Credentials Successfully Deleted');
 }
 
 main().catch((error) => console.error(error));
