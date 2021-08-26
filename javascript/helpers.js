@@ -96,16 +96,19 @@
  
  
  /** 
-  * Mutates the JS objects to GraphQL syntax to prep the data to be sent to the server
+  * Transform a javascript object into a GraphQL string.
+  * @param {object} A (non-array) javascript object.
   * @return String of the statements key-value pair with GQL server syntax 
   */
- 
- export const toGqlObject = (obj) => {
-   const items = Object.keys(obj).map((k) => {
-     return(`${k}: ${JSON.stringify(obj[k])}`)
-   });
-   return("\n{" + items.join("\n") + "\n}\n");
- }
+  export const toGqlObject = (obj) => {
+    const items = [];
+    for (let [k, v] of Object.entries(obj)) {
+      const value = (typeof v === 'object' && !Array.isArray(v)) ?
+                    toGqlObject(v) : JSON.stringify(v);
+      items.push(`${k}: ${value}`);
+    }
+    return("\n{" + items.join("\n") + "\n}\n");
+  }
  
  
  /** 

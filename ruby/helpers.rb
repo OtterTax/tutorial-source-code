@@ -13,9 +13,7 @@ module OTX
     # @return [Hash] A valid authentication credential.
     def get_credential
       login_data = get_config_element('loginData')
-      data = { email:    login_data['email'],
-               password: login_data['password'] };
-      endpoint = get_config_element('baseUrl') + '/v2/auth/sign_in';
+      endpoint = get_config_element('baseUrl') + '/v2/auth/sign_in'
       uri = URI( endpoint )
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == 'https')
@@ -23,7 +21,7 @@ module OTX
         http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       end
       request = Net::HTTP::Post.new(uri.request_uri, { 'Content-Type': 'application/json' } )
-      request.body = JSON.generate( data )
+      request.body = JSON.generate( login_data )
       response = http.request(request)
       { 'access-token' => response['access-token'],
         'client' =>       response['client'],
@@ -36,7 +34,7 @@ module OTX
     # @return [TrueClass, FalseClass] True if the credential
     #   was successfully deleted, false otherwise.
     def delete_credential( credential: )
-      endpoint = get_config_element('baseUrl') + '/v2/auth/sign_out';
+      endpoint = get_config_element('baseUrl') + '/v2/auth/sign_out'
       uri = URI( endpoint )
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == 'https')
@@ -77,7 +75,7 @@ module OTX
     # @param credential [Hash] A valid credential, typically obtained by get_credential.
     # @param payload [String] A GraphQL query or mutation to send to the server.
     # @return [Object] The response from the server formatted as a ruby object.
-    def post_gql( credential: , payload: )
+    def post_gql( credential:, payload: )
       uri = URI( get_config_element('baseUrl') + '/v2/graphql' )
       header = credential.merge( { 'Content-Type': 'application/json' } )
       Net::HTTP.start(uri.host, uri.port,
@@ -97,20 +95,20 @@ module OTX
           {}
         end
       end
-    end    
+    end
 
     private
-    
+
     # Check to be sure the configuration file exists, then
     # get the given configuration element from the configuration file.
     def get_config_element( element_name )
       unless( File.exist?( '../config.json' ) )
         STDOUT.puts( 'No configuration file found.' )
-        STDOUT.puts( "Run '../build_config.rb' to create one." )
+        STDOUT.puts( "Run 'setup.rb' to create one." )
         STDOUT.puts( "Or use '../config.json.example' as a sample to build it from scratch." )
         exit
       end
-      config = JSON.parse(IO.read( '../config.json' ) );
+      config = JSON.parse(IO.read( '../config.json' ) )
       config[element_name]
     end
   end
