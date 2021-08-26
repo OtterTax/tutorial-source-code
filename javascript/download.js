@@ -1,10 +1,14 @@
-//This import increases functionality to interact with the file system
+/*
+ * Import fs so we can read and write files.
+ */
 import fs from 'fs';
 
-//import our team's helper methods from the file helpers.js
+/*
+ * Import global helper methods.
+ */
 import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials } from './helpers.js'
 
-/**
+/*
  * Using graphql-request from
  * https://github.com/prisma-labs/graphql-request
  * Example tested with node version 14.16.0
@@ -17,7 +21,6 @@ import { GraphQLClient, gql } from 'graphql-request'
  * @param {array} uploaderIds array of statement ID's to retrieve those statements
  * @return {string} The full GraphQL get query mutation.
  */
-
 function buildMutation(uploaderIds) {
   const data = `
   query {
@@ -40,18 +43,18 @@ function buildMutation(uploaderIds) {
 
 
 /**
- * Perform the work to get the access.
- * format the ID's into GraphQL query syntax
- * and then send the query to the server and recieve the tax statements
- * for the user to visulally look through after parsing th
+ * Get the access credentials.
+ * Format the ID's of the statements you wish to download into GraphQL query syntax.
+ * Then send the query to the server and recieve the PDF tax statements in
+ * folder 'statements' with the name of the files "'uploaderID'.pdf".
  */
-
 async function main() {
-  
   const credential = await getCredential();
-  // Uploader IDs are provided by the user who uploads the statement.
-  //See ../data/f1099nec-data.json
-  var uploaderIds = ['23911','23912','23913','23914','23915'];
+ /*
+  * Uploader IDs are provided by the user who uploads the statement.
+  * See ../data/f1099nec-data.json to see the ID's used there.
+  */
+  var uploaderIds = ['23911','23912','23913','23914','2315'];
   const endpoint = getGraphqlEndpoint();
   const graphQLClient = new GraphQLClient(endpoint, { headers: credential });
   const mutation = gql`${buildMutation(uploaderIds)}`;
@@ -59,7 +62,11 @@ async function main() {
   const statements = response.getStatements.statements.nodes;
   const statmentsDirectory = './statements';
   const folderName = 'statements';
-
+  /*
+   * First check if the folder "statements" exists, if it does not exist,
+   *  it will create a new folder called "statements" and then download
+   * the statement PDF's to the folder.
+   */
   try {
     if (!fs.existsSync(folderName)) {
         fs.mkdirSync(folderName);
@@ -78,20 +85,33 @@ async function main() {
     });
   })
 
-
   /**
-   * response is a JS object that you can manipulate to suit your needs.
-   * Here we're just going to print it.
+   * If the files were successfully saved this will diplay a success message.
+   * otherwise it will display the server response error message and write
+   * 'There was an error downloading the statements'
+   * This testing method is incomplete:
+   *      1. does not check if individual files were downloaded
+   *          only that the 'statements' folder exists.
+   *      2. The server only responds with an error if none of the uploaderIds
+   *          matched the data in the server, but if even 1 out of 5 match
+   *          the server's records it will return the PDFs and not throw any error.
    */
-  //console.log(JSON.stringify(response,' ', '  '));
-
-  /**
-   * Delete User Credentials: delete the access keys from the server, this is
-   * good security practice to limit access to the user's Tax files
+  try {
+    if (fs.existsSync(folderName)) {
+      console.log(`Statements successfully downloaded to folder ${statmentsDirectory}`);
+    }
+  } catch (err) {
+    console.log(`There was an error downloading the statements`);
+    console.log(response);
+  }
+  /*
+   * Credentials are valid for several days after they've been issued.
+   * If you plan to do more work, you can use the same credential.  When done
+   * working, you should delete the credential to provide additional security.
    */
-  await deleteCredentials(credential);
-  console.log('Credentials Successfully Deleted')
+  if (await deleteCredentials(credential)){
+    console.log('Credentials Successfully Deleted');
+  }
 }
 
 main().catch((error) => console.error(error));
-

@@ -1,7 +1,11 @@
-// Import fs so we can read and write files.
+/* 
+ * Import fs so we can read and write files.
+ */
 import fs from 'fs';
 
-// Import global helper methods
+/*
+ * Import global helper methods
+ */
 import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials } from './helpers.js'
 
 /*
@@ -31,20 +35,24 @@ function buildMutation(uploaderIds) {
 }
 
 /**
- * Perform the work to get the access credentials.
+ * Get the access credentials.
  * Format the IDs into GraphQL syntax, send the mutation to the server
  * to delete the statements, and display the result for the user to review.
  */
 async function main() {
   const credential = await getCredential();
   const endpoint = getGraphqlEndpoint();
+ /*
+  * Uploader IDs are provided by the user who uploads the statement.
+  * See ../data/f1099nec-data.json to see the ID's used there.
+  */
   var uploaderIds = ['23913'];
   const graphQLClient = new GraphQLClient(endpoint, { headers: credential });
   const mutation = gql`${buildMutation(uploaderIds)}`;
   const response = await graphQLClient.request(mutation);
 
-  /*
-   * Print out of server response of conformation that data was deleted,
+  /* 
+   * Print outof server response of conformation that data was deleted,
    * or errors if any occured.
    */
   console.log(JSON.stringify(response,' ', '  '));
@@ -54,8 +62,10 @@ async function main() {
    * If you plan to do more work, you can use the same credential.  When done 
    * working, you should delete the credential to provide additional security.
    */
-  await deleteCredentials(credential);
-  console.log('Credentials Successfully Deleted')
+  if (await deleteCredentials(credential)){
+    console.log('Credentials Successfully Deleted');
+  }
+
 }
 
 main().catch((error) => console.error(error));

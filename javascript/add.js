@@ -1,11 +1,11 @@
 /*
  * Import fs so we can read and write files.
-*/
+ */
 import fs from 'fs';
 
 /*
  *  Import global helper methods
-*/
+ */
 import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials } from './helpers.js'
 
 /*
@@ -19,7 +19,7 @@ import { GraphQLClient, gql } from 'graphql-request'
 /**
  * Build the GraphQL mutation for adding new statements.
  * @param {array} statements An array of statements to add.
- *   Each statement in the array is an object.
+     Each statement in the array is an object.
  * @return {string} The full GraphQL add mutation.
  */
 function buildMutation(statements) {
@@ -50,15 +50,13 @@ function buildMutation(statements) {
 
 
 /**
- * Perform the work to get the access credentials and to read the JSON file 
- * into JS objects.
- * format the statements into GraphQL syntax 
+ * Get the access credentials and to read the JSON file 
+ * containing statements into JS objects.
+ * Format the statements into GraphQL syntax 
  * and then send them to the server. 
  * Return the uploaded data to a manipulatable String.
  */
-
 async function main() {
-
   const credential = await getCredential();
   const statements = getData('../data/f1099nec-data.json', 'utf8');
   const endpoint = getGraphqlEndpoint();
@@ -73,13 +71,13 @@ async function main() {
   console.log(JSON.stringify(response,' ', '  '));
 
   /*
-   * Delete User Credentials: delete the access keys from the server, this is
-   * good security practice to limit access to the user's Tax files
+   * Credentials are valid for several days after they've been issued.
+   * If you plan to do more work, you can use the same credential.  When done 
+   * working, you should delete the credential to provide additional security.
    */
-  await deleteCredentials(credential);
-  console.log('Credentials Successfully Deleted');
+  if (await deleteCredentials(credential)){
+    console.log('Credentials Successfully Deleted');
+  }
 }
 
 main().catch((error) => console.error(error));
-
-

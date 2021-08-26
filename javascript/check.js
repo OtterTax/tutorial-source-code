@@ -1,7 +1,11 @@
-// Import fs so we can read and write files.
+/* 
+ * Import fs so we can read and write files.
+ */
 import fs from 'fs';
 
-// Import global helper methods
+/*
+ * Import global helper methods.
+ */
 import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials } from './helpers.js'
 
 /*
@@ -45,9 +49,9 @@ function buildMutation(uploaderIds) {
 }
 
 /**
- * Perform the work to get the statements.
+ * Get the statements from the GQL server:
  * Format the ID's into GraphQL query syntax, send the query to
- * the server, and display the result for the user to review.
+ * the server, and display the response(the statements) for the user to review.
  */
 async function main() {
   const credential = await getCredential();
@@ -57,7 +61,7 @@ async function main() {
   const mutation = gql`${buildMutation(uploaderIds)}`;
   const response = await graphQLClient.request(mutation);
 
-  /**
+  /*
    * response is a JS object that you can manipulate to suit your needs.
    * Here we're just going to print it.
    */
@@ -68,8 +72,9 @@ async function main() {
    * If you plan to do more work, you can use the same credential.  When done 
    * working, you should delete the credential to provide additional security.
    */
-  await deleteCredentials(credential);
-  console.log('Credentials Successfully Deleted')
+  if (await deleteCredentials(credential)){
+    console.log('Credentials Successfully Deleted');
+  }
 }
 
 main().catch((error) => console.error(error));
