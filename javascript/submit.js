@@ -4,7 +4,7 @@
 import fs from 'fs';
 
 /*
- * Import global helper methods
+ * Import global helper methods.
  */
 import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials } from './helpers.js'
 
@@ -15,45 +15,54 @@ import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredenti
  */
 import { GraphQLClient, gql } from 'graphql-request'
 
+/*
+ * Build a GraphQL mutation for submitting statements to the IRS.
+ * Statements in the sandbox system are not submitted to the IRS; the
+ *  mutation is provided for testing purposes only.} uploaderIds 
+ */
+
+
+
+
 /**
- * Build the GraphQL mutation for deleting statements.
- * @param {array} uploaderIds An array of Uploader IDs of statements to delete.
- * @return {string} The full GraphQL delete mutation.
+ * Build the GraphQL mutation for submitting statements finalized in the server.
+ * @param {array} uploaderIds array of statement ID's of statements to submit
+ * @return {string} The full GraphQL submit query mutation.
  */
 function buildMutation(uploaderIds) {
   const data = `
-    mutation {
-      deleteStatements(
-        uploaderIds: [${uploaderIds.map(D => {return('\"' + D + '\"')})}]
-      ) {
-        errors
-        deleteCount
-      }
+  mutation {
+    submitStatements(
+      uploaderIds:  [${uploaderIds.map(D => {return('\"' + D + '\"')})}]
+    ) {
+      errors
+      successCount
     }
+  }
   `
   return(data);
 }
 
+
 /**
  * Get the access credentials.
- * Format the IDs into GraphQL syntax, send the mutation to the server
- * to delete the statements, and display the result for the user to review.
+ * Format the ID's into GraphQL query syntax.
+ * Then send the query to the server to submit the statements.
  */
 async function main() {
   const credential = await getCredential();
-  const endpoint = getGraphqlEndpoint();
  /*
   * Uploader IDs are provided by the user who uploads the statement.
   * See ../data/f1099nec-data.json to see the ID's used there.
   */
-  var uploaderIds = ['23913'];
+  var uploaderIds = ['23911','23912','23913','23914','23915'];
+  const endpoint = getGraphqlEndpoint();
   const graphQLClient = new GraphQLClient(endpoint, { headers: credential });
   const mutation = gql`${buildMutation(uploaderIds)}`;
   const response = await graphQLClient.request(mutation);
 
-  /* 
-   * Print outof server response of conformation that data was deleted,
-   * or errors if any occured.
+  /*
+   * Printing out the server response of the status of the query.
    */
   console.log(JSON.stringify(response,' ', '  '));
 
@@ -65,7 +74,6 @@ async function main() {
   if (await deleteCredentials(credential)){
     console.log('Credentials Successfully Deleted');
   }
-
 }
 
 main().catch((error) => console.error(error));

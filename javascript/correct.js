@@ -4,7 +4,7 @@
 import fs from 'fs';
 
 /*
- * Import global helper methods.
+ * Import global helper methods
  */
 import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials } from './helpers.js'
 
@@ -15,50 +15,52 @@ import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredenti
  */
 import { GraphQLClient, gql } from 'graphql-request'
 
+
 /**
- * Build the GraphQL mutation for getting the statements from the server.
- * @param {array} uploaderIds An array of Uploader IDs of statements to retrieve.
- * @return {string} The full GraphQL get query for retrieveing statements.
+ * Build the GraphQL mutation for correcting statements.
+ * @param {array} corrections An array of corrections (parts of statements)  
+ *   to update certain statements with.
+ * @return {string} The full GraphQL update mutation.
  */
-function buildMutation(uploaderIds) {
+function buildMutation(corrections) {
   const data = `
-  query {
-    getF1099necStatements(
-        uploaderIds: [
-          ${uploaderIds.map(D => {return('\"' + D + '\"')})}
-        ]
+  mutation {
+    updateF1099necStatements(
+      statements: [ ${corrections.map((s) => {return(toGqlObject(s))}).join("\n")}
+      ]
     ) {
-      errors
       statements {
-        pageInfo {
-          hasNextPage
-        }
-        nodes {
+        recordNumber
+        statement {
           otxId
           uploaderId
-          statementValid
-          validationMessages
-          status
-          statusDescription
+          nonemployeeComp
+          recipientCity
+          recipientZipCode
         }
+        messages
       }
+      errors
     }
   }
   `
   return(data);
 }
 
+
 /**
- * Get the statements from the GQL server:
- * Format the ID's into GraphQL query syntax, send the query to
- * the server, and display the response(the statements) for the user to review.
+ * Get the access credentials and read the JSON file 
+ * into JS objects.
+ * Format the corrections into GraphQL syntax.
+ * Then send them to the server. 
+ * Return the uploaded data to a manipulatable String with the updated data.
  */
 async function main() {
   const credential = await getCredential();
-  var uploaderIds = ['23911','23912','23913','23914','23915'];
+  const corrections = getData('../data/f1099nec-corrections.json', 'utf8');
   const endpoint = getGraphqlEndpoint();
   const graphQLClient = new GraphQLClient(endpoint, { headers: credential });
-  const mutation = gql`${buildMutation(uploaderIds)}`;
+  const mutation = gql`${buildMutation(corrections)}`;
   const response = await graphQLClient.request(mutation);
 
   /*
@@ -78,3 +80,4 @@ async function main() {
 }
 
 main().catch((error) => console.error(error));
+
