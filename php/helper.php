@@ -80,6 +80,13 @@ class Helper {
     curl_setopt($ch, CURLOPT_HEADER, true);
     $server_output = curl_exec ($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+
+
+
+// Why doesn't this happen in setup?  Search for 'list'
+
+
     // graphql endpoint returns an extra "\r\n" at the beginning
     list($preamble, $raw_headers, $raw_body) = explode("\r\n\r\n", $server_output, 3);
 

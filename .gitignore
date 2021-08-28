@@ -1,5 +1,7 @@
 # Ignore the configuration file which contains a username and password.
+# Also ignore the backup file if it exists.
 /config.json
+/config.json.save
 
 # Ignore the javascript directory for now.  Code is not complete.
 # Also need to add instructions to README file for installing

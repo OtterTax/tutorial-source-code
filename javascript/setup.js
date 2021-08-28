@@ -80,6 +80,16 @@ class Setup {
     }
   }
   /**
+   * Report the actions taken to the user.
+   */
+  reportResults() {
+    const text = "Setup complete.\n" +
+                 ("Registration was " + (this.registrationConfirmed ? "" : "not ") + "confirmed.\n") +
+                 ("Configuration file was " + (this.configFileCreated ? "" : "not ") + "created.\n")
+    console.clear();
+    console.log(text);
+  }
+  /**
    * Confirm the user's registration.
    * This method delegates work to other methods, the most important of which
    * is postRegistrationConfirmation. See that method for more information about
@@ -136,26 +146,16 @@ class Setup {
     question(text, this.waitForEnterOptions);
   }
   /**
-   * Report the actions taken to the user.
-   */
-  reportResults() {
-    const text = "Setup complete.\n" +
-                 ("Registration was " + (this.registrationConfirmed ? "" : "not ") + "confirmed.\n") +
-                 ("Configuration file was " + (this.configFileCreated ? "" : "not ") + "created.\n")
-    console.clear();
-    console.log(text);
-  }
-  /**
    * Get the base GraphQL endpoint that corresponds to the environment that the user wishes to
    * configure.
    * @return {String} The base GraphQL endpoint, for example https://sandbox.ottertax.com.
    */
   getGraphqlEndpoint() {
-    console.log( "\nAvailable environments" );
+    console.log("\nAvailable environments");
     for (const [key, value] of Object.entries(this.environments)) {
       console.log(`${key}: ${value[0]}`);
     }
-    let response = question( 'Select the OtterTax environment you will be using [1]: ' );
+    let response = question('Select the OtterTax environment you will be using [1]: ');
     if(response === '') {
       response = '1';
     }
@@ -172,9 +172,9 @@ class Setup {
    *   length.  If false, prompt user for their existing password.
    * @return {String} The user's password.
    */
-  getPassword( newPassword = false ) {
+  getPassword(newPassword = false) {
     let text = null;
-    if( newPassword ) {
+    if(newPassword) {
       text = "\nEnter the password you will use to access OtterTax.\n" +
              "Please choose a secure password of at least 20 characters.\n"
     } else {
