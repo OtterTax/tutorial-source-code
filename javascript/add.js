@@ -19,7 +19,7 @@ import { GraphQLClient, gql } from 'graphql-request'
 /**
  * Build the GraphQL mutation for adding new statements.
  * @param {array} statements An array of statements to add.
-     Each statement in the array is an object.
+ *   Each statement in the array is an object.
  * @return {string} The full GraphQL add mutation.
  */
 function buildMutation(statements) {
@@ -50,7 +50,7 @@ function buildMutation(statements) {
 
 
 /**
- * Get the access credentials and to read the JSON file 
+ * Get the access credentials and then read the JSON file 
  * containing statements into JS objects.
  * Format the statements into GraphQL syntax 
  * and then send them to the server. 

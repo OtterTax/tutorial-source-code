@@ -6,7 +6,7 @@ import fs from 'fs';
 /*
  * Import global helper methods.
  */
-import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials } from './helpers.js'
+import { getCredential, getGraphqlEndpoint, getData, toGqlObject, deleteCredentials, downloadSuccessChecker} from './helpers.js'
 
 /*
  * Using graphql-request from
@@ -17,8 +17,8 @@ import { GraphQLClient, gql } from 'graphql-request'
 
 
 /**
- * Build the GraphQL mutation for getting the statements from the server.
- * @param {array} uploaderIds array of statement ID's to retrieve those statements
+ * Build the GraphQL mutation for getting the PDF's from the server.
+ * @param {array} uploaderIds array of statement ID's to retrieve their PDF statements
  * @return {string} The full GraphQL get query mutation.
  */
 function buildMutation(uploaderIds) {
@@ -41,7 +41,6 @@ function buildMutation(uploaderIds) {
   return(data);
 }
 
-
 /**
  * Get the access credentials.
  * Format the ID's of the statements you wish to download into GraphQL query syntax.
@@ -60,11 +59,11 @@ async function main() {
   const mutation = gql`${buildMutation(uploaderIds)}`;
   const response = await graphQLClient.request(mutation);
   const statements = response.getStatements.statements.nodes;
-  const statmentsDirectory = './statements';
+  const statementsDirectory = './statements';
   const folderName = 'statements';
   /*
    * First check if the folder "statements" exists, if it does not exist,
-   *  it will create a new folder called "statements" and then download
+   * it will create a new folder called "statements" and then download
    * the statement PDF's to the folder.
    */
   try {
@@ -75,7 +74,7 @@ async function main() {
     console.error(err);
   }
   statements.forEach((statement) => {
-    let filename = `${statmentsDirectory}/${statement.uploaderId}.pdf`;
+    let filename = `${statementsDirectory}/${statement.uploaderId}.pdf`;
     let buffer = Buffer.from(statement.pdf, 'base64');
     fs.writeFile(filename, buffer,{ flag: 'a' }, err => {
         if (err) {
@@ -85,25 +84,31 @@ async function main() {
     });
   })
 
-  /**
+  /*
    * If the files were successfully saved this will diplay a success message.
-   * otherwise it will display the server response error message and write
-   * 'There was an error downloading the statements'
-   * This testing method is incomplete:
-   *      1. does not check if individual files were downloaded
-   *          only that the 'statements' folder exists.
-   *      2. The server only responds with an error if none of the uploaderIds
-   *          matched the data in the server, but if even 1 out of 5 match
-   *          the server's records it will return the PDFs and not throw any error.
+   * otherwise it will display an error message and write
+   * 'There was an error downloading the statements' and the number of files
+   * downloaded out of the amount that were supposed to download.
+   * 
+   * NOTE: the error was probably a wrong statement ID, the server will
+   * silently ignore the query for that statement if it can not find the
+   * file in the system.
+   * Please check to make sure all file ID's are accurate.
    */
-  try {
-    if (fs.existsSync(folderName)) {
-      console.log(`Statements successfully downloaded to folder ${statmentsDirectory}`);
-    }
-  } catch (err) {
-    console.log(`There was an error downloading the statements`);
-    console.log(response);
+  /*
+   * This will send the server response and user-inputed ID's to the checker method
+   * to inquire if any statements were not printed.
+   */
+  var notDownloaded =  downloadSuccessChecker(statements, uploaderIds);
+  if(notDownloaded.length == 0){
+    console.log('All Statements have successfuly downloaded.\n')
+  }else{
+    console.log(`There was an error downloading your statements: \n  
+     ONLY ${(uploaderIds.length - notDownloaded.length)} of ${uploaderIds.length} statements have been printed. \n
+         Please check the Id's to make sure the following files ID's are correct:\n
+          ${JSON.stringify(notDownloaded, "\t", '\n\t\t')} \nThe ${uploaderIds.length - notDownloaded.length} statement(s) have downloaded to ${statementsDirectory} folder.\n`);
   }
+
   /*
    * Credentials are valid for several days after they've been issued.
    * If you plan to do more work, you can use the same credential.  When done

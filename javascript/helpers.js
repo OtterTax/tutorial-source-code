@@ -25,7 +25,7 @@
   * Function to read JSON file into JavaScript objects.
   * Checks that the JSON config file exists; if it doesn't the function
   * will output error messages and throw an error.
-  * @param {String} fileName is the file to read into a JS String
+  * @param {String} fileName is the JSON file to read into a JS String
   * @return {String} the JS string containing the file
   */
  function getFileContents(filename) {
@@ -45,7 +45,7 @@
   * the user: email, password or Server URL endpoint.
   * @param {String} elementName name of Object key for the value the method
   *   should return.
-  * @return {String}  the value of the provided key for this object.
+  * @return {String} the value of the provided key for this object.
  */
  function getConfigElement(elementName) {
    const config = JSON.parse(getFileContents('../config.json'));
@@ -87,13 +87,13 @@
  /**
   * Parses through the file containing tax statements to
   * create JS objects out of the string stored in the JSON file.
-  * @param {string} filename (NOTE: don't use camelcasing) the name of the file
+  * @param {string} filename the name of the file
   *   path which contains the JSON file.
   * @return {statements} an array of statements, each containing their
   *   unique key-value pair.
   */
- export const getData = (filename) => {
-   return(JSON.parse(getFileContents(filename)));
+ export const getData = (fileName) => {
+   return(JSON.parse(getFileContents(fileName)));
  }
 
 
@@ -117,9 +117,8 @@
   * This will require the user to make new credentials for the next edit
   * they make to their account.
   * The server is specified in the baseUrl parameter of ../config.json
-  * The function will print out "{ success: true }" if the credentials
-  * were successfully deleted.
-  * @param {Object} credential the access keys to be deleted
+  * @param {Object} credential the access keys to be deleted.
+  * @return {Boolean} true if the credentials were deleted, false otherwise.
   */
  export async function deleteCredentials(credential) {
    const endpoint = getConfigElement('baseUrl') + '/v2/auth/sign_out';
@@ -130,4 +129,33 @@
 
        const newData = await response.json();
        return newData;
+ }
+
+ /**
+  * Checks which PDF's of the user-inputed ID's, for querying PDF statements from the server,
+  * have been returned by the OtterTax server.
+  * @param {Object} statements the server response of the statements retrieved by
+  *   the OtterTax server.
+  * @param {array} Ids list of the user-inputed statement ID's to query their PDF.
+  * @returns {array} list of ID's of which a PDF statement was not returned in the
+  *   server response.
+  */
+ export function downloadSuccessChecker(statements, Ids){
+   var notDownloaded = [];
+   var success = 0;
+   var error = 0;
+  for (let index = 0; index < Ids.length; index++) {
+    statements.forEach((statement) => {
+      let fileId = statement.uploaderId;
+      if (fileId === Ids[index]){
+          success = 1;
+      }
+    });
+      if(success == 0){
+        notDownloaded[error] = Ids[index];
+        error++;
+      }
+      success = 0;
+  }
+  return notDownloaded;
  }

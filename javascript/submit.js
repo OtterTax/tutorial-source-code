@@ -18,10 +18,8 @@ import { GraphQLClient, gql } from 'graphql-request'
 /*
  * Build a GraphQL mutation for submitting statements to the IRS.
  * Statements in the sandbox system are not submitted to the IRS; the
- *  mutation is provided for testing purposes only.} uploaderIds 
+ *  mutation is provided for testing purposes only.
  */
-
-
 
 
 /**
