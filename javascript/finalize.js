@@ -68,7 +68,7 @@ function buildMutation(uploaderIds) {
 
 
 /**
- * Get the access credentials.
+ * Get user access credentials.
  * Then format the ID's into GraphQL query syntax
  * and then send the query to the server to finalize the tax statements.
  * Recieve back the query update from the server.
