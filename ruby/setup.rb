@@ -32,7 +32,6 @@ module OTX
              "both are optional."
       clear_console
       STDOUT.puts( text )
-      STDOUT.puts
       STDOUT.write( 'Press enter to continue. ' )
       STDIN.gets
     end
@@ -74,6 +73,14 @@ module OTX
         @config_file_created = false
       end
     end
+    # Report the actions taken to the user.
+    def report_results
+      text = "Setup complete.\n" +
+             ("Registration was " + (@registration_confirmed ? "" : "not ") + "confirmed.\n") +
+             ("Configuration file was " + (@config_file_created ? "" : "not ") + "created.")
+      clear_console
+      STDOUT.puts( text )
+    end
     # Confirm the user's registration.
     # This method delegates work to other methods, the most important of which
     # are build_confirmation_mutation and post_registration_confirmation.
@@ -94,7 +101,7 @@ module OTX
         STDIN.gets
       else
         STDOUT.puts( JSON.pretty_generate( server_response ) )
-        STDOUT.puts( "Registration failed.  Please correct the error above and try again." )
+        STDOUT.puts( "\nRegistration failed.  Please correct the error above and try again." )
         exit
       end
     end
@@ -116,21 +123,13 @@ module OTX
         @password ||= get_password
         config = { 'baseUrl' => @graphql_endpoint,
                   'loginData' => { 'email' =>     email_address,
-                                    'password' => @password } }
+                                   'password' =>  @password } }
         File.open( @config_file_name, 'w' ) { |f| f.puts( JSON.pretty_generate( config ) ) }
         msg = 'Configuration file was created.'
         @config_file_created = true
       end
       STDOUT.write( "\n#{msg} Press enter to continue. " )
       STDIN.gets
-    end
-    # Report the actions taken to the user.
-    def report_results
-      text = "Setup complete.\n" +
-             ("Registration was " + (@registration_confirmed ? "" : "not ") + "confirmed.\n") +
-             ("Configuration file was " + (@config_file_created ? "" : "not ") + "created.")
-      clear_console
-      STDOUT.puts( text )
     end
     # Slightly kludgey way to clear the console window.
     # Silently fails if neither command works.
@@ -168,7 +167,8 @@ module OTX
         text = "\nEnter your OtterTax password.\n" \
                "Your entry will not be displayed on screen.\n"
       end
-      IO.console.getpass( text )
+      STDOUT.puts( text )
+      IO.console.getpass( "Your password: " )
     end
     # Get the user's email address.
     # @return [String] The user's email address.
@@ -176,6 +176,7 @@ module OTX
       text = "\nEnter the email address you used when you registered with\n" \
              "OtterTax."
       STDOUT.puts( text )
+      STDOUT.write( 'Your email address: ' )
       STDIN.gets.chomp
     end
     # Get the user's confirmation token. Confirmation tokens are emailed to users
@@ -185,6 +186,7 @@ module OTX
       text = "\nEnter the confirmation token from the email you received\n" \
              "after registering."
       STDOUT.puts( text )
+      STDOUT.write( 'Your token: ' )
       STDIN.gets.chomp
     end
     # Build the GraphQL mutation for confirming a user's registration.
@@ -227,7 +229,8 @@ module OTX
           {}
         end
       end
-    end    
+    end
+
   end
 end
 
