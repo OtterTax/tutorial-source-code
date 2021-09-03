@@ -6,6 +6,14 @@ class StatementAdder:
         self.helper = Helper()
 
     def build_mutation(self, statements):
+        """Build the GraphQL mutation for adding new statements.
+
+        :param list statements: The statements to add. Each statement
+          is a dict
+        :return: The full GraphQL add mutation
+        :rtype: str
+        """
+
         data = "\n".join(map(self.helper.to_gql, statements))
         str = """
           mutation {
@@ -30,7 +38,9 @@ class StatementAdder:
           }
         """ % (data)
         return(str)
+
     def add(self):
+        """Add the statements in ../data/f1099nec-data.json."""
         credential = self.helper.get_credential()
         # See the file ../data/f1099nec-data.json for statement data and format.
         statements = self.helper.get_data('../data/f1099nec-data.json')

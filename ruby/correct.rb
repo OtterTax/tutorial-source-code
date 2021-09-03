@@ -36,7 +36,7 @@ module OTX
     def correct
       credential = get_credential
       # See ../data/f1099nec-corrections.json for correction format.
-      corrections = get_data( filename: '../data/f1099nec-corrections.json' );
+      corrections = get_data( filename: '../data/f1099nec-corrections.json' )
       mutation = build_mutation(corrections: corrections)
       response = post_gql( credential: credential,
                            payload: mutation )

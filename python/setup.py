@@ -6,6 +6,7 @@ from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
 
 class Setup:
+
     def __init__(self):
         self.config_file_name = '../config.json';
         self.response_regex = "^y(?:es)?$";
@@ -16,12 +17,14 @@ class Setup:
         self.config_file_created = False
 
     def setup(self):
+        """Run the main methods to complete the setup."""
         self.print_introduction()
         self.confirm_registration_if_user_chooses()
         self.write_config_file_if_user_chooses()
         self.report_results()
 
     def print_introduction(self):
+        """Provide the user with information about what the program will do."""
         text = "This program helps with two tasks that must be completed \n" + \
                "before running the demo programs.  First, it confirms your\n" + \
                "registration, and second, it creates a configuration file\n" + \
@@ -33,6 +36,12 @@ class Setup:
         input( 'Press enter to continue. ' )
 
     def confirm_registration_if_user_chooses(self):
+        """Provide the user with information about registration confirmation.
+
+        Ask the user if they want to confirm their registration and
+        call the confirm_registration method if the answer is yes.
+        """
+
         text = "Would you like to confirm your registration?\n" + \
                "To confirm your registration, you must first complete the\n" + \
                "registration process to create an account.\n" + \
@@ -48,6 +57,12 @@ class Setup:
             print("Not confirming registration.\n")
 
     def write_config_file_if_user_chooses(self):
+        """Provide the user with information about creating the configuration file.
+
+        Ask the user if they want to create the configuration file and
+        call the write_config_file method if the answer is yes.
+        """
+
         text = "All of the sample code in this directory requires a\n" + \
                "configuration file in the parent directory\n" + \
                "(../config.json). You can create the file by hand by\n" + \
@@ -63,6 +78,7 @@ class Setup:
             print("Not writing configuration file.\n")
 
     def report_results(self):
+        """Report the actions taken to the user."""
         if(self.registration_confirmed):
             registration_text = 'Registration was confirmed.'
         else:
@@ -77,6 +93,13 @@ class Setup:
         print(text)
 
     def confirm_registration(self):
+        """Confirm the user's registration.
+
+        This method delegates work to other methods, the most important of which
+        are build_confirmation_mutation and post_registration_confirmation.
+        See each of those methods for more information about their operation.
+        """
+
         if not hasattr(self, 'graphql_endpoint'):
             self.graphql_endpoint = self.get_graphql_endpoint()
         if not hasattr(self, 'password'):
@@ -88,12 +111,12 @@ class Setup:
                           'You can log in and begin processing statements.'
         success = False
         try:
-            if server_response.data.confirmRegistration.message == success_message:
+            if server_response['confirmRegistration']['message'] == success_message:
                 success = True
         except AttributeError:
             pass
         if success:
-            this.registration_confirmed = True
+            self.registration_confirmed = True
             input("\nRegistration confirmation succeeded. Press enter to continue. ")
         else:
             print(json.dumps(server_response, indent = 2))
@@ -101,6 +124,11 @@ class Setup:
             quit()
 
     def write_config_file(self):
+        """Write the configuration file.
+
+        If the file already exists, confirm that the user wants to overwrite it first.
+        """
+
         write = True
         if os.path.exists(self.config_file_name):
             response = input("\nConfiguration file exists.  Overwrite? [N]: ")
@@ -128,6 +156,13 @@ class Setup:
         (os.system("clear")) or (os.system("cls"))
 
     def get_graphql_endpoint(self):
+        """Get the base GraphQL endpoint.
+
+        The endpoint corresponds to the environment that the user wishes to configure.
+        :return: The base GraphQL endpoint, for example https://sandbox.ottertax.com
+        :rtype: str
+        """
+
         print("\nAvailable environments")
         for key, value in self.environments.items():
           print("\t%s: %s" %(key, value[0]))
@@ -142,6 +177,15 @@ class Setup:
         return(environment[1])
 
     def get_password(self, new_password=False):
+        """Get the user's password, either a new password or an existing password.
+
+        :param bool new_password: If true, print information about minimum password
+          length.  If false, prompt user for their existing password.  Optional.
+          Defaults to false.
+        :return: The user's password
+        :rtype: str
+        """
+
         if(new_password):
           text = "\nEnter the password you will use to access OtterTax.\n" + \
                  "Please choose a secure password of at least 20 characters.\n" + \
@@ -154,6 +198,12 @@ class Setup:
         return(password)
     
     def get_email_address(self):
+        """Get the user's email address.
+
+        :return: The user's email address
+        :rtype: str
+        """
+
         text = "\nEnter the email address you used when you registered with\n" + \
                "OtterTax."
         print( text )
@@ -161,6 +211,13 @@ class Setup:
         return(address)
 
     def get_confirmation_token(self):
+        """Get the user's confirmation token.
+
+        Confirmation tokens are emailed to users after successful registration.
+        :return: The user's confirmation token
+        :rtype: str
+        """
+
         text = "\nEnter the confirmation token from the email you received\n" + \
                "after registering."
         print( text )
@@ -168,6 +225,15 @@ class Setup:
         return(token)
   
     def build_confirmation_mutation(self, password, confirmation_token):
+        """Build the GraphQL mutation for confirming a user's registration.
+
+        :param str password: The password the user uses to access the OtterTax API
+        :param str confimation_token: The confirmation token received by the user after
+          completing the registration process
+        :return: The full GraphQL mutation
+        :rtype: str
+        """
+
         mutation = """
           mutation {
           confirmRegistration(
@@ -181,6 +247,13 @@ class Setup:
         return(mutation)
 
     def post_registration_confirmation(self, payload):
+        """Post the mutation for confirming a user's registration.
+
+        :param str payload: The GraphQL mutation for confirming registrations
+        :return: The response from the server
+        :rtype: dict
+        """
+
         transport = AIOHTTPTransport(url=self.graphql_endpoint + '/v2/graphql')
         client = Client(transport=transport, fetch_schema_from_transport=True)
         query = gql(payload)

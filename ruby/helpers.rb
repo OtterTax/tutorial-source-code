@@ -101,6 +101,7 @@ module OTX
 
     # Check to be sure the configuration file exists, then
     # get the given configuration element from the configuration file.
+    # @return [String] The requested configuration element.
     def get_config_element( element_name )
       unless( File.exist?( '../config.json' ) )
         STDOUT.puts( 'No configuration file found.' )

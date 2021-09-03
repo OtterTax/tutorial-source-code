@@ -14,3 +14,4 @@
 
 # Ignore downloaded statements
 /ruby/statement_downloads/*
+/python/statement_downloads/*
