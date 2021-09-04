@@ -8,9 +8,14 @@ useful on its own.
 
 You should have a working knowledge of the language whose tutorial you're
 following.  All of the code should work with recent versions of the various
-languages.  The code was tested on both Linux and Windows with the following
-versions of the languages:
-- Ruby 2.6.0
+languages.  The bullets below list which version of each language was used to
+test the code along with any libraries that must be installed.  The programs
+for each language were tested on both Linux and Windows.
+- Python
+  - Version 3.8.8
+  - GQL for Python [https://github.com/graphql-python/gql](https://github.com/graphql-python/gql)
+- Ruby
+  - Version 2.6.0
 
 ## Running the code
 
