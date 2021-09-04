@@ -1,5 +1,9 @@
 <?php
 
+
+
+// Documentation: https://docs.phpdoc.org/3.0/
+
 class Setup {
   private $config_file_name;
   private $response_regex;

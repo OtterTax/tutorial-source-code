@@ -88,7 +88,10 @@ class Helper {
 
 
     // graphql endpoint returns an extra "\r\n" at the beginning
-    list($preamble, $raw_headers, $raw_body) = explode("\r\n\r\n", $server_output, 3);
+    // Preamble is returned with add
+    // list($preamble, $raw_headers, $raw_body) = explode("\r\n\r\n", $server_output, 3);
+    // Preamble is *not* returned with check.
+    list($raw_headers, $raw_body) = explode("\r\n\r\n", $server_output, 2);
 
     if( preg_match('/^200/', $http_code) ) {
       return(json_decode($raw_body));

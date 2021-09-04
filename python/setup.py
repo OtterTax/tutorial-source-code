@@ -18,12 +18,12 @@ class Setup:
 
     def setup(self):
         """Run the main methods to complete the setup."""
-        self.print_introduction()
-        self.confirm_registration_if_user_chooses()
-        self.write_config_file_if_user_chooses()
-        self.report_results()
+        self._print_introduction()
+        self._confirm_registration_if_user_chooses()
+        self._write_config_file_if_user_chooses()
+        self._report_results()
 
-    def print_introduction(self):
+    def _print_introduction(self):
         """Provide the user with information about what the program will do."""
         text = "This program helps with two tasks that must be completed \n" + \
                "before running the demo programs.  First, it confirms your\n" + \
@@ -31,15 +31,15 @@ class Setup:
                "with your login information.\n" + \
                "Either of these tasks can also be completed by hand, so\n" + \
                "both are optional.\n"
-        self.clear_console()
+        self._clear_console()
         print( text )
         input( 'Press enter to continue. ' )
 
-    def confirm_registration_if_user_chooses(self):
+    def _confirm_registration_if_user_chooses(self):
         """Provide the user with information about registration confirmation.
 
         Ask the user if they want to confirm their registration and
-        call the confirm_registration method if the answer is yes.
+        call the _confirm_registration method if the answer is yes.
         """
 
         text = "Would you like to confirm your registration?\n" + \
@@ -47,20 +47,20 @@ class Setup:
                "registration process to create an account.\n" + \
                "To register for the OtterTax sandbox, go to\n" + \
                "https://sandbox.ottertax.com/register.\n"
-        self.clear_console()
+        self._clear_console()
         print( text )
         response = input( 'Confirm registration? [Y]: ' )
         response = response.strip().lower()
         if(re.match(self.response_regex_with_default, response)):
-            self.confirm_registration()
+            self._confirm_registration()
         else:
             print("Not confirming registration.\n")
 
-    def write_config_file_if_user_chooses(self):
+    def _write_config_file_if_user_chooses(self):
         """Provide the user with information about creating the configuration file.
 
         Ask the user if they want to create the configuration file and
-        call the write_config_file method if the answer is yes.
+        call the _write_config_file method if the answer is yes.
         """
 
         text = "All of the sample code in this directory requires a\n" + \
@@ -68,16 +68,16 @@ class Setup:
                "(../config.json). You can create the file by hand by\n" + \
                "using ../config.json.example as an example or you can\n" + \
                "have this program create it for you.\n"
-        self.clear_console()
+        self._clear_console()
         print( text )
         response = input( 'Create configuration file? [Y]: ' )
         response = response.strip().lower()
         if(re.match(self.response_regex_with_default, response)):
-            self.write_config_file()
+            self._write_config_file()
         else:
             print("Not writing configuration file.\n")
 
-    def report_results(self):
+    def _report_results(self):
         """Report the actions taken to the user."""
         if(self.registration_confirmed):
             registration_text = 'Registration was confirmed.'
@@ -89,24 +89,24 @@ class Setup:
             configuration_text = 'Configuration file was not created.'
         text = "Setup complete.\n" + registration_text + "\n" + \
                configuration_text + "\n"
-        self.clear_console()
+        self._clear_console()
         print(text)
 
-    def confirm_registration(self):
+    def _confirm_registration(self):
         """Confirm the user's registration.
 
         This method delegates work to other methods, the most important of which
-        are build_confirmation_mutation and post_registration_confirmation.
+        are _build_confirmation_mutation and _post_registration_confirmation.
         See each of those methods for more information about their operation.
         """
 
         if not hasattr(self, 'graphql_endpoint'):
-            self.graphql_endpoint = self.get_graphql_endpoint()
+            self.graphql_endpoint = self._get_graphql_endpoint()
         if not hasattr(self, 'password'):
-            self.password = self.get_password(True)
-        token = self.get_confirmation_token()
-        mutation = self.build_confirmation_mutation(self.password, token)
-        server_response = self.post_registration_confirmation(mutation)
+            self.password = self._get_password(True)
+        token = self._get_confirmation_token()
+        mutation = self._build_confirmation_mutation(self.password, token)
+        server_response = self._post_registration_confirmation(mutation)
         success_message = 'Registration confirmation succeeded. ' + \
                           'You can log in and begin processing statements.'
         success = False
@@ -123,7 +123,7 @@ class Setup:
             print("\nRegistration failed.  Please correct the error above and try again.\n")
             quit()
 
-    def write_config_file(self):
+    def _write_config_file(self):
         """Write the configuration file.
 
         If the file already exists, confirm that the user wants to overwrite it first.
@@ -138,10 +138,10 @@ class Setup:
                 msg = 'Not modifying existing configuration file.'
         if(write):
             if not hasattr(self, 'graphql_endpoint'):
-                self.graphql_endpoint = self.get_graphql_endpoint()
-            email_address = self.get_email_address()
+                self.graphql_endpoint = self._get_graphql_endpoint()
+            email_address = self._get_email_address()
             if not hasattr(self, 'password'):
-                self.password = self.get_password(True)
+                self.password = self._get_password(True)
             config = { 'baseUrl': self.graphql_endpoint,
                       'loginData': { 'email':     email_address,
                                      'password':  self.password } }
@@ -152,10 +152,14 @@ class Setup:
             self.config_file_created = True
         input("\n" + msg + "\nPress enter to continue. ")
 
-    def clear_console(self):
-        (os.system("clear")) or (os.system("cls"))
+    def _clear_console(self):
+        """Clear the console window."""
+        command = 'clear'
+        if os.name in ('nt', 'dos'):
+            command = 'cls'
+        os.system(command)
 
-    def get_graphql_endpoint(self):
+    def _get_graphql_endpoint(self):
         """Get the base GraphQL endpoint.
 
         The endpoint corresponds to the environment that the user wishes to configure.
@@ -176,7 +180,7 @@ class Setup:
         environment = self.environments[response]
         return(environment[1])
 
-    def get_password(self, new_password=False):
+    def _get_password(self, new_password=False):
         """Get the user's password, either a new password or an existing password.
 
         :param bool new_password: If true, print information about minimum password
@@ -197,7 +201,7 @@ class Setup:
         password = getpass.getpass('Your password: ')
         return(password)
     
-    def get_email_address(self):
+    def _get_email_address(self):
         """Get the user's email address.
 
         :return: The user's email address
@@ -210,7 +214,7 @@ class Setup:
         address = input('Your email address: ')
         return(address)
 
-    def get_confirmation_token(self):
+    def _get_confirmation_token(self):
         """Get the user's confirmation token.
 
         Confirmation tokens are emailed to users after successful registration.
@@ -224,7 +228,7 @@ class Setup:
         token = input('Your confirmation token: ')
         return(token)
   
-    def build_confirmation_mutation(self, password, confirmation_token):
+    def _build_confirmation_mutation(self, password, confirmation_token):
         """Build the GraphQL mutation for confirming a user's registration.
 
         :param str password: The password the user uses to access the OtterTax API
@@ -246,7 +250,7 @@ class Setup:
         """ % (confirmation_token, password)
         return(mutation)
 
-    def post_registration_confirmation(self, payload):
+    def _post_registration_confirmation(self, payload):
         """Post the mutation for confirming a user's registration.
 
         :param str payload: The GraphQL mutation for confirming registrations

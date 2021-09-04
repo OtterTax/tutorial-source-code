@@ -5,7 +5,7 @@ class StatementCorrector:
     def __init__(self):
         self.helper = Helper()
   
-    def build_mutation(self, corrections):
+    def _build_mutation(self, corrections):
         """Build a GraphQL mutation for updating (correcting) statements.
 
         :param list corrections: A list of changes to make.  Each set of 
@@ -43,7 +43,7 @@ class StatementCorrector:
         credential = self.helper.get_credential()
         # See ../data/f1099nec-corrections.json for correction format.
         corrections = self.helper.get_data('../data/f1099nec-corrections.json')
-        mutation = self.build_mutation(corrections)
+        mutation = self._build_mutation(corrections)
         response = self.helper.post_gql( credential, mutation )
         # response is a dict that you can manipulate to suit your needs.
         # Here we're just going to print it (as a JSON object to make it

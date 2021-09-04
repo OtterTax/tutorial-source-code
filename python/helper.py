@@ -122,4 +122,3 @@ class Helper:
         contents = open('../config.json').read()
         config = json.loads(contents)
         return(config[element_name])
-

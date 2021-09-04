@@ -8,7 +8,7 @@ class StatementDownloader:
         self.helper = Helper()
         self.download_directory = './statement_downloads'
 
-    def build_query(self, uploader_ids):
+    def _build_query(self, uploader_ids):
         """Build a GraphQL mutation for retrieving PDF versions of statements.
 
         :param list uploader_ids: A list of uploader_ids representing
@@ -43,7 +43,7 @@ class StatementDownloader:
         # Uploader IDs are provided by the user who uploads the statement.
         # See ../data/f1099nec-data.json
         uploader_ids = ['23911','23912','23913','23914','23915']
-        query = self.build_query(uploader_ids)
+        query = self._build_query(uploader_ids)
         response = self.helper.post_gql( credential, query )
         statements = response['getStatements']['statements']['nodes']
         for statement in statements:
@@ -51,7 +51,7 @@ class StatementDownloader:
             pdf_file = open(file_name, 'w+b')
             pdf_file.write(base64.b64decode(statement['pdf']))
             pdf_file.close()
-        print( f'Statements successfully downloaded to #{self.download_directory}.' )
+        print( f'Statements successfully downloaded to {self.download_directory}.' )
         # Credentials are valid for several days after they've been issued.
         # If you plan to do more work, you can use the same credential.  When done 
         # working, you should delete the credential to provide additional security.

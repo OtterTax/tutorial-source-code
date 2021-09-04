@@ -5,7 +5,7 @@ class StatementChecker:
     def __init__(self):
         self.helper = Helper()
   
-    def build_query(self, uploader_ids):
+    def _build_query(self, uploader_ids):
         """Build a GraphQL mutation for checking statement validity.
 
         :param list uploader_ids: A list of uploader_ids representing
@@ -49,7 +49,7 @@ class StatementChecker:
         # IDs for non-existent statements (e.g., those that have been deleted) will be
         # silently ignored.
         uploader_ids = ['23911','23912','23913','23914','23915']
-        query = self.build_query(uploader_ids)
+        query = self._build_query(uploader_ids)
         response = self.helper.post_gql( credential, query )
         # response is a dict that you can manipulate to suit your needs.
         # Here we're just going to print it (as a JSON object to make it
