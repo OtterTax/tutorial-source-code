@@ -1,9 +1,4 @@
 <?php
-
-
-
-// Documentation: https://docs.phpdoc.org/3.0/
-
 class Setup {
   private $config_file_name;
   private $response_regex;
@@ -22,6 +17,9 @@ class Setup {
                             '2' => array('Production','https://prod.ottertax.com') ];
   }
 
+  /**
+   * Run the main methods required to complete the setup.
+   */
   function setup() {
     $this->print_introduction();
     $this->confirm_registration_if_user_chooses();
@@ -29,6 +27,9 @@ class Setup {
     $this->report_results();
   }
 
+  /**
+   * Provide the user with information about what the program will do.
+   */
   private function print_introduction() {
     $text = "This program helps with two tasks that must be completed \n" .
             "before running the demo programs.  First, it confirms your\n" .
@@ -41,6 +42,11 @@ class Setup {
     readline('Press enter to continue. ');
   }
 
+  /**
+   * Provide the user with information about registration confirmation.
+   * Ask the user if they want to confirm their registration and
+   * call the confirm_registration method if the answer is yes.
+   */
   private function confirm_registration_if_user_chooses() {
     $text = "Would you like to confirm your registration?\n" .
             "To confirm your registration, you must first complete the\n" .
@@ -58,6 +64,11 @@ class Setup {
     }
   }
 
+  /**
+   * Provide the user with information about creating the configuration file.
+   * Ask the user if they want to create the configuration file and
+   * call the write_config_file method if the answer is yes.
+   */
   private function write_config_file_if_user_chooses() {
     $text = "All of the sample code in this directory requires a\n" .
             "configuration file in the parent directory\n" .
@@ -75,6 +86,9 @@ class Setup {
     }
   }
 
+  /**
+   * Report the actions taken to the user.
+   */
   private function report_results() {
     $text = "Setup complete.\n" .
             ("Registration was " . ($this->registration_confirmed ? "" : "not ") . "confirmed.\n") .
@@ -83,6 +97,13 @@ class Setup {
     print($text);
   }
 
+  /**
+   * Confirm the user's registration.
+   *
+   * This method delegates work to other methods, the most important of which
+   * are build_confirmation_mutation and post_registration_confirmation.
+   * See each of those methods for more information about their operation.
+   */
   private function confirm_registration() {
     if($this->graphql_endpoint === null) {
       $this->graphql_endpoint = $this->get_graphql_endpoint();
@@ -106,6 +127,11 @@ class Setup {
     }
   }
 
+  /**
+   * Write the configuration file.
+   *
+   * If the file already exists, confirm that the user wants to overwrite it first.
+   */
   private function write_config_file() {
     $write = true;
     if(file_exists($this->config_file_name)) {
@@ -138,12 +164,19 @@ class Setup {
     readline("Press enter to continue. ");
   }
 
-  # Slightly kludgey way to clear the console window.
-  # Silently fails if neither command works.
+  /**
+   * Slightly kludgey way to clear the console window. Silently fails if neither command works.
+   */
   private function clear_console() {
     (system("clear")) || (system("cls"));
   }
 
+  /**
+   * Get the base GraphQL endpoint that corresponds to the environment that the user wishes to
+   * configure.
+   *
+   * @return string The base GraphQL endpoint, for example https://sandbox.ottertax.com.
+   */
   private function get_graphql_endpoint() {
     print("\nAvailable environments\n");
     foreach($this->environments as $key=>$value) {
@@ -159,10 +192,19 @@ class Setup {
     $environment = $this->environments[$response];
     return($environment[1]);
   }
+
+  /**
+   * Get the user's password, either a new password or an existing password.
+   *
+   * @param new_password boolean If true, print information about minimum password
+   * length.  If false, prompt user for their existing password.
+   * @return string The user's password.
+   */
   private function get_password($new_password=false) {
     if($new_password) {
       $text = "\nEnter the password you will use to access OtterTax.\n" .
-              "Please choose a secure password of at least 20 characters.\n";
+              "Please choose a secure password of at least 20 characters.\n" .
+              "YOUR PASSWORD WILL BE DISPLAYED AS YOU TYPE.\n";
       print($text);
       $password = readline('Your password: ');
     } else {
@@ -171,6 +213,11 @@ class Setup {
     return($password);
   }
 
+  /**
+   * Get the user's email address.
+   *
+   * @return string The user's email address.
+   */
   private function get_email_address() {
     $text = "\nEnter the email address you used when you registered with\n" .
            "OtterTax.\n";
@@ -178,6 +225,13 @@ class Setup {
     return($address);
   }
 
+  /**
+   * Get the user's confirmation token.
+   *
+   * Confirmation tokens are emailed to users after successful registration.
+   *
+   * @return string The user's confirmation token.
+   */
   private function get_confirmation_token() {
     $text = "\nEnter the confirmation token from the email you received\n" .
             "after registering.";
@@ -185,6 +239,14 @@ class Setup {
     return($token);
   }
 
+  /**
+   * Build the GraphQL mutation for confirming a user's registration.
+   *
+   * @param string password The password the user uses to access the OtterTax API.
+   * @param string confimation_token The confirmation token received by the user after
+   * completing the registration process.
+   * @return string The full GraphQL mutation.
+   */
   private function build_confirmation_mutation($password, $confirmation_token) {
     $mutation = <<<END_MUTATION
       mutation {
@@ -199,6 +261,12 @@ class Setup {
     return($mutation);
   }
 
+  /**
+   * Post the mutation for confirming a user's registration.
+   *
+   * @param string payload The GraphQL mutation for confirming registrations.
+   * @return object The response from the server formatted as a PHP object.
+   */
   private function post_registration_confirmation($payload) {
     $endpoint = $this->graphql_endpoint . '/v2/graphql';
     $headers = ["Content-Type: application/json"];
