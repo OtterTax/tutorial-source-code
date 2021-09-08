@@ -35,7 +35,8 @@ here is a brief list of steps for running the code.
     To create the configuration file manually, copy the file `config.json.example`
     to `config.json` and edit the file to reflect your settings.
 * Add statements by running the appropriate program for the language you're
-  using.  For example, ruby users should run add.rb.
+  using.  For example, python users should run `python add.py`ruby users
+  should run `ruby add.rb`.
 * Run the check program to check the validity of the statements.  Note
   that the data intentionally includes errors to illustrate statement
   validation and correction.

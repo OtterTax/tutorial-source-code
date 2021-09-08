@@ -13,5 +13,7 @@
 /python/*.pyc
 
 # Ignore downloaded statements
+/javascript/statement_downloads/*
 /ruby/statement_downloads/*
 /python/statement_downloads/*
+/php/statement_downloads/*

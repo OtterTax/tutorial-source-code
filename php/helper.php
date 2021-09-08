@@ -123,7 +123,6 @@ class Helper {
         $response = $tmp[1];
     }
     list($raw_headers, $raw_body) = explode($delimiter, $response, 2);
-
     if( preg_match('/^200/', $http_code) ) {
       return(json_decode($raw_body));
     } else {
