@@ -11,6 +11,13 @@ following.  All of the code should work with recent versions of the various
 languages.  The bullets below list which version of each language was used to
 test the code along with any libraries that must be installed.  The programs
 for each language were tested on both Linux and Windows.
+- JavaScript
+  - Version 14.17.5
+  - A working package manager (npm or yarn)
+- PHP
+  - Version 8.0.10
+  - Correct configuration of cURL for PHP.  On Windows, we had to manually
+    configure the CA root certificate file.
 - Python
   - Version 3.8.8
   - GQL for Python [https://github.com/graphql-python/gql](https://github.com/graphql-python/gql)
