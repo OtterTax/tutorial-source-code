@@ -165,14 +165,15 @@ class Setup {
   }
 
   /**
-   * Slightly kludgey way to clear the console window.
+   * If running on Windows, print two blank lines, otherwise issue
+   * the 'clear' command.
    */
   private function clear_console() {
-    $command = 'clear';
     if(strcasecmp(substr(PHP_OS, 0, 3), 'win') == 0) {
-      $command = 'cls';
+      print("\n\n");
+    } else {
+      system('clear');
     }
-    system($command);
   }
 
   /**

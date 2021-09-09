@@ -58,7 +58,7 @@ class Helper {
       $success = true;
     } else {
       $success = false;
-      echo("Logout failed.\n");
+      print("Logout failed.\n");
     }
     return($success);
   }
@@ -139,9 +139,9 @@ class Helper {
    */
   private function get_config_element($element_name) {
     if(!file_exists('../config.json')) {
-      echo('No configuration file found.');
-      echo("Run 'setup.rb' to create one.");
-      echo("Or use '../config.json.example' as a sample to build it from scratch.");
+      print('No configuration file found.');
+      print("Run 'setup.rb' to create one.");
+      print("Or use '../config.json.example' as a sample to build it from scratch.");
       exit;
     }
     $config = json_decode(file_get_contents('../config.json'));
