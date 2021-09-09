@@ -94,7 +94,6 @@ class Helper {
    * Post a query or mutation.
    *
    * The server is defined in the baseUrl parameter of ../config.json.
-   *
    * @param array credential A valid credential, typically obtained by get_credential.
    * @param string payload A GraphQL query or mutation to send to the server.
    * @return object The response from the server formatted as a PHP object.
@@ -133,6 +132,8 @@ class Helper {
   }
 
   /**
+   * Get a configuration element.
+   *
    * Check to be sure the configuration file exists, then
    * get the given configuration element from the configuration file.
    * @return string The requested configuration element.
@@ -150,6 +151,7 @@ class Helper {
 
   /**
    * Convert HTTP headers to a PHP array.
+   *
    * Code adapted from
    * https://stackoverflow.com/questions/41978957/get-header-from-php-curl-response
    * @return array The HTTP headers.
