@@ -12,7 +12,7 @@ class Setup {
     this.responseRegexWithDefault = /(?:^$)|(?:^y(?:es)?$)/
     this.waitForEnterOptions = {hideEchoBack: true, mask: ''}
     this.environments = { '1': ['Sandbox','https://sandbox.ottertax.com'],
-                          '2': ['Production','https://prod.ottertax.com'] }
+                          '2': ['Production','https://api.ottertax.com'] }
   }
   /**
    * Run the main methods required to complete the setup.

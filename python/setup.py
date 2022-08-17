@@ -12,7 +12,7 @@ class Setup:
         self.response_regex = "^y(?:es)?$";
         self.response_regex_with_default = "(?:^$)|(?:^y(?:es)?$)";
         self.environments = { '1': ['Sandbox','https://sandbox.ottertax.com'],
-                              '2': ['Production','https://prod.ottertax.com'] }
+                              '2': ['Production','https://api.ottertax.com'] }
         self.registration_confirmed = False
         self.config_file_created = False
 

@@ -10,7 +10,7 @@ module OTX
       @response_regex = /^y(?:es)?$/
       @response_regex_with_default = /(?:^$)|(?:^y(?:es)?$)/
       @environments = { '1' => ['Sandbox','https://sandbox.ottertax.com'],
-                        '2' => ['Production','https://prod.ottertax.com'] }
+                        '2' => ['Production','https://api.ottertax.com'] }
     end
     # Run the main methods required to complete the setup.
     def setup

@@ -14,7 +14,7 @@ class Setup {
     $this->response_regex = "/^y(?:es)?$/";
     $this->response_regex_with_default = "/(?:^$)|(?:^y(?:es)?$)/";
     $this->environments = [ '1' => array('Sandbox','https://sandbox.ottertax.com'),
-                            '2' => array('Production','https://prod.ottertax.com') ];
+                            '2' => array('Production','https://api.ottertax.com') ];
   }
 
   /**
