@@ -12,8 +12,18 @@
 /python/__pycache__/*
 /python/*.pyc
 
+# Ignore compiled java class code
+java/*.class
+# Ignore java libraries, which may not be redistributable
+java/lib/*
+!java/lib/otx*
+# Ignore java notes which are only for internal use
+java/notes.txt
+
 # Ignore downloaded statements
 /javascript/statement_downloads/*
 /ruby/statement_downloads/*
 /python/statement_downloads/*
 /php/statement_downloads/*
+/go/statement_downloads/*
+/java/statement_downloads/*

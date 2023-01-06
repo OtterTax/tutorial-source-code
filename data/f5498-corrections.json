@@ -1,0 +1,13 @@
+[
+  { "uploaderId": "6733766",
+    "statement":  { "lateContributionCode": "FD",
+                    "lateContributionYear": 2020 }
+  },
+  { "uploaderId": "6733768",
+    "statement":  { "roth": false }
+  },
+  { "uploaderId": "6733710",
+    "statement":  { "senderCity": "New York",
+                    "senderZipCode": "10022" }
+  }
+]
