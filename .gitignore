@@ -17,8 +17,6 @@ java/*.class
 # Ignore java libraries, which may not be redistributable
 java/lib/*
 !java/lib/otx*
-# Ignore java notes which are only for internal use
-java/notes.txt
 
 # Ignore downloaded statements
 /javascript/statement_downloads/*
